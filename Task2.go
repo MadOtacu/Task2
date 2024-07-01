@@ -22,8 +22,12 @@ func main() {
 			os.Exit(1)
 		}
 
+		sizeToPaste := strconv.FormatInt(info.Size(), 10)
 		if !info.IsDir() {
+			fmt.Println("Файл " + info.Name() + " размером " + sizeToPaste + " байт")
 			size += info.Size()
+		} else {
+			fmt.Println("Директория " + info.Name() + " размером " + sizeToPaste + " байт")
 		}
 
 		return nil
@@ -34,6 +38,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	sizeToPaste := strconv.FormatInt(size, 10)
-	fmt.Println("Размер вложенных директорий составляет " + sizeToPaste + " байт")
+	totalSizeToPaste := strconv.FormatInt(size, 10)
+	fmt.Println("Размер вложенных директорий составляет " + totalSizeToPaste + " байт")
 }

@@ -9,11 +9,7 @@ import (
 	"strconv"
 )
 
-func main() {
-	var dst = flag.String("dst", "", "Путь к директории для рассчета размера")
-
-	flag.Parse()
-
+func dirSearcher(dst *string) {
 	var size int64 = 0
 
 	errPath := filepath.Walk(*dst, func(path string, info fs.FileInfo, err error) error {
@@ -22,12 +18,21 @@ func main() {
 			os.Exit(1)
 		}
 
-		sizeToPaste := strconv.FormatInt(info.Size(), 10)
-		if !info.IsDir() {
-			fmt.Println("Файл " + info.Name() + " размером " + sizeToPaste + " байт")
+		sizeToPaste := strconv.FormatInt(size, 10)
+		if !info.IsDir() && *dst == path {
 			size += info.Size()
-		} else {
+			fmt.Println("Файл " + info.Name() + " размером " + sizeToPaste + " байт")
+			size = 0
+		} else if info.IsDir() && *dst == path {
 			fmt.Println("Директория " + info.Name() + " размером " + sizeToPaste + " байт")
+			fmt.Println(*dst)
+			fmt.Println(path)
+			size = 0
+		} else if !info.IsDir() && *dst != path {
+			size += info.Size()
+			fmt.Println("gg Файл " + info.Name() + " размером " + sizeToPaste + " байт")
+			fmt.Println(*dst)
+			fmt.Println(path)
 		}
 
 		return nil
@@ -37,7 +42,12 @@ func main() {
 		fmt.Println("Ошибка во время чтения файлов")
 		os.Exit(1)
 	}
+}
 
-	totalSizeToPaste := strconv.FormatInt(size, 10)
-	fmt.Println("Размер вложенных директорий составляет " + totalSizeToPaste + " байт")
+func main() {
+	var dst = flag.String("dst", "", "Путь к директории для рассчета размера")
+
+	flag.Parse()
+
+	dirSearcher(dst)
 }

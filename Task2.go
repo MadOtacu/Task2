@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 )
 
 type File struct {
@@ -17,44 +18,51 @@ type File struct {
 
 func dirSearcher(dst *string, sort *string) {
 	var structFileArr []File
+	var wg sync.WaitGroup
 
 	dirList, errRead := os.ReadDir(*dst)
 	if errRead != nil {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	for _, dirElement := range dirList {
+	for _, dirFile := range dirList {
+		wg.Add(1)
+		dirElement := dirFile
 		structFile := new(File)
-		if dirElement.IsDir() {
-
-			errWalking := filepath.Walk(*dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
-				if !info.IsDir() {
-					structFile.size += info.Size()
+		go func() {
+			defer wg.Done()
+			if dirElement.IsDir() {
+				errWalking := filepath.Walk(*dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
+					if !info.IsDir() {
+						structFile.size += info.Size()
+					}
+					return nil
+				})
+				if errWalking != nil {
+					flag.PrintDefaults()
+					os.Exit(1)
 				}
-				return nil
-			})
-			if errWalking != nil {
-				flag.PrintDefaults()
-				os.Exit(1)
+
+				structFile.fileType = "Директория"
+				structFile.name = dirElement.Name()
+
+				structFileArr = append(structFileArr, *structFile)
+			} else {
+				infoFile, errGettingInfo := dirElement.Info()
+				if errGettingInfo != nil {
+					panic(errGettingInfo)
+				}
+
+				structFile.fileType = "Файл"
+				structFile.name = dirElement.Name()
+				structFile.size = infoFile.Size()
+
+				structFileArr = append(structFileArr, *structFile)
 			}
-
-			structFile.fileType = "Директория"
-			structFile.name = dirElement.Name()
-
-			structFileArr = append(structFileArr, *structFile)
-		} else {
-			infoFile, errGettingInfo := dirElement.Info()
-			if errGettingInfo != nil {
-				panic(errGettingInfo)
-			}
-
-			structFile.fileType = "Файл"
-			structFile.name = dirElement.Name()
-			structFile.size = infoFile.Size()
-
-			structFileArr = append(structFileArr, *structFile)
-		}
+		}()
 	}
+
+	wg.Wait()
 
 	Sorting(structFileArr, sort)
 

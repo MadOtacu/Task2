@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -12,9 +13,9 @@ import (
 )
 
 type File struct {
-	fileType string
-	name     string
-	size     int64
+	FileType string `json:"fileType"`
+	Name     string `json:"name"`
+	Size     int64  `json:"size"`
 }
 
 func dirSearcher(dst string, sort string) ([]byte, error) {
@@ -35,7 +36,7 @@ func dirSearcher(dst string, sort string) ([]byte, error) {
 			if dirElement.IsDir() {
 				errWalking := filepath.Walk(dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
 					if !info.IsDir() {
-						structFile.size += info.Size()
+						structFile.Size += info.Size()
 					}
 					return nil
 				})
@@ -44,8 +45,8 @@ func dirSearcher(dst string, sort string) ([]byte, error) {
 					os.Exit(1)
 				}
 
-				structFile.fileType = "Директория"
-				structFile.name = dirElement.Name()
+				structFile.FileType = "Директория"
+				structFile.Name = dirElement.Name()
 
 				structFileArr = append(structFileArr, *structFile)
 			} else {
@@ -54,9 +55,9 @@ func dirSearcher(dst string, sort string) ([]byte, error) {
 					panic(errGettingInfo)
 				}
 
-				structFile.fileType = "Файл"
-				structFile.name = dirElement.Name()
-				structFile.size = infoFile.Size()
+				structFile.FileType = "Файл"
+				structFile.Name = dirElement.Name()
+				structFile.Size = infoFile.Size()
 
 				structFileArr = append(structFileArr, *structFile)
 			}
@@ -67,13 +68,13 @@ func dirSearcher(dst string, sort string) ([]byte, error) {
 
 	Sorting(structFileArr, sort)
 
-	return json.MarshalIndent(structFileArr, "", " ")
+	return json.MarshalIndent(structFileArr, "", "  ")
 
 	//for _, dirPrint := range structFileArr {
-	//	size, restOfSize, unit := UnitScaling(dirPrint.size)
-	//	sizeToPaste := strconv.FormatInt(size, 10)
+	//	Size, restOfSize, unit := UnitScaling(dirPrint.Size)
+	//	SizeToPaste := strconv.FormatInt(Size, 10)
 	//	restOfSizeToPaste := strconv.FormatInt(restOfSize, 10)
-	//	fmt.Println(dirPrint.fileType + " " + dirPrint.name + " размером " + sizeToPaste + "." + restOfSizeToPaste + " " + unit)
+	//	fmt.Println(dirPrint.FileType + " " + dirPrint.Name + " размером " + SizeToPaste + "." + restOfSizeToPaste + " " + unit)
 	//}
 }
 
@@ -81,13 +82,13 @@ func Sorting(arrToSort []File, sort string) {
 	for i := 0; i < (len(arrToSort) - 1); i++ {
 		for j := 0; j < ((len(arrToSort) - 1) - i); j++ {
 			if sort == "ASC" {
-				if arrToSort[j].size > arrToSort[j+1].size {
+				if arrToSort[j].Size > arrToSort[j+1].Size {
 					temp := arrToSort[j]
 					arrToSort[j] = arrToSort[j+1]
 					arrToSort[j+1] = temp
 				}
 			} else if sort == "DESC" {
-				if arrToSort[j].size < arrToSort[j+1].size {
+				if arrToSort[j].Size < arrToSort[j+1].Size {
 					temp := arrToSort[j]
 					arrToSort[j] = arrToSort[j+1]
 					arrToSort[j+1] = temp
@@ -101,14 +102,14 @@ func Sorting(arrToSort []File, sort string) {
 }
 
 /*
-func UnitScaling(size int64) (int64, int64, string) {
+func UnitScaling(Size int64) (int64, int64, string) {
 	var restOfSize int64
 	var unitValue int
 	var unit string
 
-	for i := 1; size > 1000; i++ {
-		restOfSize = size % 1000
-		size = size / 1000
+	for i := 1; Size > 1000; i++ {
+		restOfSize = Size % 1000
+		Size = Size / 1000
 		unitValue = i
 	}
 
@@ -122,7 +123,7 @@ func UnitScaling(size int64) (int64, int64, string) {
 	case 3:
 		unit = "Гб"
 	}
-	return size, restOfSize, unit
+	return Size, restOfSize, unit
 }
 */
 
@@ -133,9 +134,14 @@ func main() {
 		sort := r.URL.Query().Get("sort")
 		resp, err := dirSearcher(dst, sort)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			os.Exit(1)
 		}
-		fmt.Fprintf(w, string(resp))
+		fmt.Fprint(w, string(resp))
 	})
-	http.ListenAndServe(":9000", nil)
+	errServ := http.ListenAndServe(":9000", nil)
+	if errServ != nil {
+		log.Println(errServ)
+		return
+	}
 }

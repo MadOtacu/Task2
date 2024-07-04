@@ -11,15 +11,17 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"sync"
 	"syscall"
 	"time"
 )
 
 type File struct {
-	FileType string `json:"fileType"`
-	Name     string `json:"name"`
-	Size     int64  `json:"size"`
+	FileType      string `json:"fileType"`
+	Name          string `json:"name"`
+	Size          int64  `json:"size"`
+	ConvertedSize string `json:"convertedSize"`
 }
 
 func dirSearcher(dst string, sort string) ([]byte, error) {
@@ -72,14 +74,11 @@ func dirSearcher(dst string, sort string) ([]byte, error) {
 
 	Sorting(structFileArr, sort)
 
-	return json.MarshalIndent(structFileArr, "", "  ")
+	for i := 0; i < len(structFileArr); i++ {
+		structFileArr[i].ConvertedSize = UnitScaling(structFileArr[i].Size)
+	}
 
-	//for _, dirPrint := range structFileArr {
-	//	Size, restOfSize, unit := UnitScaling(dirPrint.Size)
-	//	SizeToPaste := strconv.FormatInt(Size, 10)
-	//	restOfSizeToPaste := strconv.FormatInt(restOfSize, 10)
-	//	fmt.Println(dirPrint.FileType + " " + dirPrint.Name + " размером " + SizeToPaste + "." + restOfSizeToPaste + " " + unit)
-	//}
+	return json.MarshalIndent(structFileArr, "", "  ")
 }
 
 func Sorting(arrToSort []File, sort string) {
@@ -105,8 +104,7 @@ func Sorting(arrToSort []File, sort string) {
 	}
 }
 
-/*
-func UnitScaling(Size int64) (int64, int64, string) {
+func UnitScaling(Size int64) string {
 	var restOfSize int64
 	var unitValue int
 	var unit string
@@ -127,9 +125,11 @@ func UnitScaling(Size int64) (int64, int64, string) {
 	case 3:
 		unit = "Гб"
 	}
-	return Size, restOfSize, unit
+
+	SizeToPaste := strconv.FormatInt(Size, 10)
+	restOfSizeToPaste := strconv.FormatInt(restOfSize, 10)
+	return string(SizeToPaste + "." + restOfSizeToPaste + " " + unit)
 }
-*/
 
 func main() {
 	server := &http.Server{

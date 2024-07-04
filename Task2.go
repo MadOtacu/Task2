@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -8,8 +9,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"sync"
+	"syscall"
+	"time"
 )
 
 type File struct {
@@ -128,6 +132,10 @@ func UnitScaling(Size int64) (int64, int64, string) {
 */
 
 func main() {
+	server := &http.Server{
+		Addr: ":9001",
+	}
+
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 
 		dst := r.URL.Query().Get("dst")
@@ -139,9 +147,25 @@ func main() {
 		}
 		fmt.Fprint(w, string(resp))
 	})
-	errServ := http.ListenAndServe(":9000", nil)
-	if errServ != nil {
-		log.Println(errServ)
-		return
+
+	go func() {
+		errServ := server.ListenAndServe()
+		if errServ != nil {
+			log.Println(errServ)
+			os.Exit(1)
+		}
+		log.Println("Stopped serving new connections.")
+	}()
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+
+	shutdownCtx, shutdownRelease := context.WithTimeout(context.Background(), 10*time.Second)
+	defer shutdownRelease()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		log.Printf("HTTP shutdown error: %v", err)
 	}
+	log.Println("Graceful shutdown complete.")
 }

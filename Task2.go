@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,6 +14,8 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"gopkg.in/ini.v1"
 )
 
 type File struct {
@@ -132,8 +133,14 @@ func UnitScaling(Size int64) string {
 }
 
 func main() {
+	cfg, errLoad := ini.Load("conf.ini")
+	if errLoad != nil {
+		fmt.Printf("Fail to read file: %v", errLoad)
+		os.Exit(1)
+	}
+
 	server := &http.Server{
-		Addr: ":9001",
+		Addr: cfg.Section("server").Key("port").String(),
 	}
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
@@ -151,10 +158,9 @@ func main() {
 	go func() {
 		errServ := server.ListenAndServe()
 		if errServ != nil {
-			log.Println(errServ)
-			os.Exit(1)
+			fmt.Println(errServ)
 		}
-		log.Println("Stopped serving new connections.")
+		fmt.Println("Stopped serving new connections.")
 	}()
 
 	sigChan := make(chan os.Signal, 1)
@@ -165,7 +171,7 @@ func main() {
 	defer shutdownRelease()
 
 	if err := server.Shutdown(shutdownCtx); err != nil {
-		log.Printf("HTTP shutdown error: %v", err)
+		fmt.Printf("HTTP shutdown error: %v", err)
 	}
-	log.Println("Graceful shutdown complete.")
+	fmt.Println("Graceful shutdown complete.")
 }

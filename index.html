@@ -7,73 +7,17 @@
         </title>
     </head>
     <body>
-        <button class="button smoothEdges" onclick="location.href='index.html'" type="button">
+        <button class="button smoothEdges" onclick="oneDirectoryUp()" type="button">
             Назад
         </button>
-        <button class="button right smoothEdges" onclick="location.href='index.html'" type="button">
+        <button class="button right smoothEdges" onclick="switchSort()" type="button">
             Сортировать
         </button>
         <div class="path">
             Путь к директории
         </div>
-        <div>
-            <table>
-                <tr>
-                    <th>
-                        Тип
-                    </th>
-                    <th>
-                        Имя
-                    </th>
-                    <th>
-                        Размер
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        Директория
-                    </td>
-                    <td>
-                        Fold1
-                    </td>
-                    <td>
-                        12.592 Мб
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Директория
-                    </td>
-                    <td>
-                        Fold2
-                    </td>
-                    <td>
-                        28.004 Кб
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Директория
-                    </td>
-                    <td>
-                        Fold3
-                    </td>
-                    <td>
-                        1.212 Гб
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Файл
-                    </td>
-                    <td>
-                        123.txt
-                    </td>
-                    <td>
-                        216 байт
-                    </td>
-                </tr>
-            </table>
+        <div id="showTable">
         </div>
+        <script src="index.js"></script> 
     </body>
 </html>

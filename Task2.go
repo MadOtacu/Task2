@@ -21,6 +21,7 @@ func serverFunc(cfg *ini.File) {
 	}
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		//Получение данных из строки браузера (dst начинается с пути, в котором находится консоль)
 		dst := r.URL.Query().Get("dst")

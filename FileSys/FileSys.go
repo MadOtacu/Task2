@@ -79,7 +79,7 @@ func DirSearcher(dst string, sort string) ([]byte, error) {
 	}
 
 	// Парсинг json-файла
-	return json.MarshalIndent(structFileArr, "", "  ")
+	return json.Marshal(structFileArr)
 }
 
 // Функция сортировки

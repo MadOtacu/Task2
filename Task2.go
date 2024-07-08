@@ -2,143 +2,18 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"flag"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"strconv"
-	"sync"
 	"syscall"
 	"time"
 
+	"example.com/example/FileSys"
 	"gopkg.in/ini.v1"
 )
 
-type File struct {
-	FileType      string `json:"fileType"`
-	Name          string `json:"name"`
-	Size          int64  `json:"size"`
-	ConvertedSize string `json:"convertedSize"`
-}
-
-func dirSearcher(dst string, sort string) ([]byte, error) {
-	var structFileArr []File
-	var wg sync.WaitGroup
-
-	dirList, errRead := os.ReadDir(dst)
-	if errRead != nil {
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
-	for _, dirFile := range dirList {
-		wg.Add(1)
-		dirElement := dirFile
-		structFile := new(File)
-		go func() {
-			defer wg.Done()
-			if dirElement.IsDir() {
-				errWalking := filepath.Walk(dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
-					if !info.IsDir() {
-						structFile.Size += info.Size()
-					}
-					return nil
-				})
-				if errWalking != nil {
-					flag.PrintDefaults()
-					os.Exit(1)
-				}
-
-				structFile.FileType = "Директория"
-				structFile.Name = dirElement.Name()
-
-				structFileArr = append(structFileArr, *structFile)
-			} else {
-				infoFile, errGettingInfo := dirElement.Info()
-				if errGettingInfo != nil {
-					panic(errGettingInfo)
-				}
-
-				structFile.FileType = "Файл"
-				structFile.Name = dirElement.Name()
-				structFile.Size = infoFile.Size()
-
-				structFileArr = append(structFileArr, *structFile)
-			}
-		}()
-	}
-
-	wg.Wait()
-
-	Sorting(structFileArr, sort)
-
-	for i := 0; i < len(structFileArr); i++ {
-		structFileArr[i].ConvertedSize = UnitScaling(structFileArr[i].Size)
-	}
-
-	return json.MarshalIndent(structFileArr, "", "  ")
-}
-
-func Sorting(arrToSort []File, sort string) {
-	for i := 0; i < (len(arrToSort) - 1); i++ {
-		for j := 0; j < ((len(arrToSort) - 1) - i); j++ {
-			if sort == "ASC" {
-				if arrToSort[j].Size > arrToSort[j+1].Size {
-					temp := arrToSort[j]
-					arrToSort[j] = arrToSort[j+1]
-					arrToSort[j+1] = temp
-				}
-			} else if sort == "DESC" {
-				if arrToSort[j].Size < arrToSort[j+1].Size {
-					temp := arrToSort[j]
-					arrToSort[j] = arrToSort[j+1]
-					arrToSort[j+1] = temp
-				}
-			} else {
-				flag.PrintDefaults()
-				os.Exit(1)
-			}
-		}
-	}
-}
-
-func UnitScaling(Size int64) string {
-	var restOfSize int64
-	var unitValue int
-	var unit string
-
-	for i := 1; Size > 1000; i++ {
-		restOfSize = Size % 1000
-		Size = Size / 1000
-		unitValue = i
-	}
-
-	switch unitValue {
-	case 0:
-		unit = "байт"
-	case 1:
-		unit = "Кб"
-	case 2:
-		unit = "Мб"
-	case 3:
-		unit = "Гб"
-	}
-
-	SizeToPaste := strconv.FormatInt(Size, 10)
-	restOfSizeToPaste := strconv.FormatInt(restOfSize, 10)
-	return string(SizeToPaste + "." + restOfSizeToPaste + " " + unit)
-}
-
-func main() {
-	cfg, errLoad := ini.Load("conf.ini")
-	if errLoad != nil {
-		fmt.Printf("Fail to read file: %v", errLoad)
-		os.Exit(1)
-	}
-
+func serverFunc(cfg *ini.File) {
 	server := &http.Server{
 		Addr: cfg.Section("server").Key("port").String(),
 	}
@@ -147,7 +22,7 @@ func main() {
 
 		dst := r.URL.Query().Get("dst")
 		sort := r.URL.Query().Get("sort")
-		resp, err := dirSearcher(dst, sort)
+		resp, err := FileSys.DirSearcher(dst, sort)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -174,4 +49,14 @@ func main() {
 		fmt.Printf("HTTP shutdown error: %v", err)
 	}
 	fmt.Println("Graceful shutdown complete.")
+}
+
+func main() {
+	cfg, errLoad := ini.Load("conf.ini")
+	if errLoad != nil {
+		fmt.Printf("Fail to read file: %v", errLoad)
+		os.Exit(1)
+	}
+	serverFunc(cfg)
+
 }

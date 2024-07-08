@@ -1,4 +1,4 @@
-module github.com/go-ini/ini
+module example.com/example
 
 go 1.22.4
 

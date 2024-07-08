@@ -9,34 +9,26 @@ document.addEventListener('DOMContentLoaded', async function() {
 }, false);
 
 function createTableFromJson (response) {
-    let arrResponse = []
-    arrResponse = JSON.parse(response)
 
-    var col = ["Тип", "Имя", "Размер"]
+    let col = ["Тип", "Имя", "Размер"]
 
-    var table = document.createElement("table")
+    let table = document.createElement("table")
 
-    var tr = table.insertRow(-1)
+    let tr = table.insertRow(-1)
 
-    for (let headi = 0; i < col.length; i++) {
-        var th = document.createElement("th");
-        th.innerHTML = col[headi];
-        tr.appendChild(th);
-    }
-
-    for (let rowi = 0; rowi < arrResponse.length; rowi++) {
+    for (let rowi = 0; rowi < response.length; rowi++) {
         tr = table.insertRow(rowi)
 
-        var tabType = tr.insertCell(0)
-        var tabName = tr.insertCell(1)
-        var tabSize = tr.insertCell(2)
+        let tabType = tr.insertCell(0)
+        let tabName = tr.insertCell(1)
+        let tabSize = tr.insertCell(2)
 
-        tabType.innerHTML = arrResponse[rowi].fileType
-        tabName.innerHTML = arrResponse[rowi].name
-        tabSize.innerHTML = arrResponse[rowi].convertedSize
+        tabType.innerHTML = response[rowi].fileType
+        tabName.innerHTML = response[rowi].name
+        tabSize.innerHTML = response[rowi].convertedSize
     }
 
-    var divContainer = document.getElementById("showTable");
+    let divContainer = document.getElementById("showTable");
     divContainer.innerHTML = "";
     divContainer.appendChild(table);
 }

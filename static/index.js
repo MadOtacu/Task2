@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    let url = "http://localhost:9001/path?dst=.&sort=ASC"
+    let url = "http://localhost:9001/path?"
 
-    let response = await fetch(url)
+    let link = new URL(this)
+
+    const params = new URLSearchParams(link)
+
+    let dst = params.get("dst")
+
+    let sort = params.get("sort")
+
+    let response = await fetch(url + new URLSearchParams(dst, sort).toString())
 
     let commits = await response.json()
 

@@ -20,12 +20,20 @@ func serverFunc(cfg *ini.File) {
 		Addr: cfg.Section("server").Key("port").String(),
 	}
 
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		//Получение данных из строки браузера (dst начинается с пути, в котором находится консоль)
 		dst := r.URL.Query().Get("dst")
+		if dst == "" {
+			dst = cfg.Section("servAtr").Key("dst").String()
+		}
 		sort := r.URL.Query().Get("sort")
+		if sort == "" {
+			sort = cfg.Section("servAtr").Key("sort").String()
+		}
 
 		//Вызов функции из пакета FileSys
 		resp, err := FileSys.DirSearcher(dst, sort)

@@ -1,20 +1,18 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    let url = "http://localhost:9001/path?"
+let sortFlag = true
 
-    let link = new URL(this)
+let directoryPath = "."
 
-    const params = new URLSearchParams(link)
+document.addEventListener('DOMContentLoaded', get(directoryPath, sortFlag), false);
 
-    let dst = params.get("dst")
+async function get (directoryPath, sortFlag) {
+    let url = "http://localhost:9001/path?dst=" + directoryPath + "&sort=" + sort(sortFlag)
 
-    let sort = params.get("sort")
-
-    let response = await fetch(url + new URLSearchParams(dst, sort).toString())
+    let response = await fetch(url)
 
     let commits = await response.json()
 
     createTableFromJson(commits)
-}, false);
+}
 
 function createTableFromJson (response) {
 
@@ -34,9 +32,40 @@ function createTableFromJson (response) {
         tabType.innerHTML = response[rowi].fileType
         tabName.innerHTML = response[rowi].name
         tabSize.innerHTML = response[rowi].convertedSize
+
+        if (response[rowi].fileType == "Директория") {
+            tabName.addEventListener("click", dirDown)
+        }
     }
 
     let divContainer = document.getElementById("showTable");
     divContainer.innerHTML = "";
     divContainer.appendChild(table);
+}
+
+function dirDown() {
+    directoryPath = directoryPath + this.innerHTML
+    get(directoryPath, sortFlag)
+}
+
+document.getElementById("sort").onclick = function switchSort () {
+    if (sortFlag == true) {
+        sortFlag = false
+
+        get(directoryPath, sortFlag)
+    }
+    else {
+        sortFlag = true
+
+        get(directoryPath, sortFlag)
+    }
+}
+
+function sort (flag) {
+    if (flag == true) {
+        return "ASC"
+    }
+    else {
+        return "DESC"
+    }
 }

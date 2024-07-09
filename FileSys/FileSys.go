@@ -1,7 +1,6 @@
 package FileSys
 
 import (
-	"encoding/json"
 	"flag"
 	"io/fs"
 	"log"
@@ -19,7 +18,7 @@ type File struct {
 }
 
 // Функция поиска данных файлов и директорий
-func DirSearcher(dst string, sort string) ([]byte, error) {
+func DirSearcher(dst string, sort string) []File {
 	var structFileArr []File
 	var wg sync.WaitGroup
 
@@ -79,7 +78,7 @@ func DirSearcher(dst string, sort string) ([]byte, error) {
 	}
 
 	// Парсинг json-файла
-	return json.MarshalIndent(structFileArr, "", " ")
+	return structFileArr
 }
 
 // Функция сортировки

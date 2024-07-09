@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,7 +14,28 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-// Функция обработки запросов сервера
+type ServerResp struct {
+	Status    int            `json:"status"`
+	ErrorText string         `json:"errorText"`
+	Data      []FileSys.File `json:"data"`
+}
+
+func serverOutput(w http.ResponseWriter, status int, errorText string, data []FileSys.File) {
+	var resp ServerResp
+	resp.Status = status
+	resp.ErrorText = errorText
+	resp.Data = data
+
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	w.WriteHeader(status)
+	w.Write(jsonResp)
+}
+
+// serberFunc - Функция обработки запросов сервера
 func serverFunc(cfg *ini.File) {
 	server := &http.Server{
 		//Получение данных порта
@@ -36,11 +58,12 @@ func serverFunc(cfg *ini.File) {
 		}
 
 		//Вызов функции из пакета FileSys
-		resp, err := FileSys.DirSearcher(dst, sort)
-		if err != nil {
+		resp := FileSys.DirSearcher(dst, sort)
+		/*if err != nil {
+			serverOutput(w, http.StatusBadRequest, err.Error(), nil)
 			fmt.Println(err)
-		}
-		fmt.Fprint(w, string(resp))
+		}*/
+		serverOutput(w, http.StatusOK, "", resp)
 	})
 
 	//Создание Горутины для запуска сервера

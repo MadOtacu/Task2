@@ -35,7 +35,7 @@ func serverOutput(w http.ResponseWriter, status int, errorText string, data []Fi
 	w.Write(jsonResp)
 }
 
-// serberFunc - Функция обработки запросов сервера
+// serverFunc - Функция обработки запросов сервера
 func serverFunc(cfg *ini.File) {
 	server := &http.Server{
 		//Получение данных порта
@@ -58,11 +58,11 @@ func serverFunc(cfg *ini.File) {
 		}
 
 		//Вызов функции из пакета FileSys
-		resp := FileSys.DirSearcher(dst, sort)
-		/*if err != nil {
+		resp, err := FileSys.DirSearcher(dst, sort)
+		if err != nil {
 			serverOutput(w, http.StatusBadRequest, err.Error(), nil)
 			fmt.Println(err)
-		}*/
+		}
 		serverOutput(w, http.StatusOK, "", resp)
 	})
 

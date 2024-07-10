@@ -18,14 +18,14 @@ type File struct {
 }
 
 // Функция поиска данных файлов и директорий
-func DirSearcher(dst string, sort string) []File {
+func DirSearcher(dst string, sort string) ([]File, error) {
 	var structFileArr []File
 	var wg sync.WaitGroup
 
 	// Считывание данных директории
 	dirList, errRead := os.ReadDir(dst)
 	if errRead != nil {
-		flag.PrintDefaults()
+		return nil, errRead
 	}
 
 	// Обход директории
@@ -78,7 +78,7 @@ func DirSearcher(dst string, sort string) []File {
 	}
 
 	// Парсинг json-файла
-	return structFileArr
+	return structFileArr, nil
 }
 
 // Функция сортировки

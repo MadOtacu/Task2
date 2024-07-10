@@ -1,10 +1,12 @@
+import { dirDown } from "./dirDown"
+
 // Создание и генерация таблицы
-function createTableFromJson (response) {
+export function createTableFromJson (response: any) {
 
     let table = document.createElement("table")
 
     for (let rowi = 0; rowi < response.length; rowi++) {
-        tr = table.insertRow(rowi)
+        let tr = table.insertRow(rowi)
 
         let tabType = tr.insertCell(0)
         let tabName = tr.insertCell(1)

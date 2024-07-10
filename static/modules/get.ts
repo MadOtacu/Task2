@@ -1,5 +1,9 @@
+import { createTableFromJson } from "./createTableFromJson"
+
+import { sort } from "./sort"
+
 // Получение данных с сервера
-function get (directoryPath, sortFlag) {
+export function get (directoryPath: any, sortFlag: any) {
     document.getElementById("path").textContent="Путь к директории: " + directoryPath
 
     let url = "http://localhost:9001/path?dst=" + directoryPath + "&sort=" + sort(sortFlag)

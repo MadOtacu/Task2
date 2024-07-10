@@ -1,5 +1,5 @@
 // Функция получения данных о сортировке
-function sort (flag) {
+export function sort (flag: any) {
     if (flag == true) {
         return "ASC"
     }

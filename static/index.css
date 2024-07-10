@@ -49,3 +49,8 @@ th, td {
     border: medium solid;
 }
 
+.buttonCell {
+    color: white;
+    background-color: blueviolet;
+}
+

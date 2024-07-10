@@ -6,7 +6,7 @@ import { sort } from "./sort"
 export function get (directoryPath: any, sortFlag: any) {
     document.getElementById("path").textContent="Путь к директории: " + directoryPath
 
-    let url = "http://localhost:9001/path?dst=" + directoryPath + "&sort=" + sort(sortFlag)
+    let url = "/path?dst=" + directoryPath + "&sort=" + sort(sortFlag)
 
     let response = fetch(url)
         .then(e => e.json())

@@ -18,6 +18,7 @@ export function createTableFromJson (response: any) {
 
         if (response[rowi].fileType == "Директория") {
             tabName.addEventListener("click", dirDown)
+            tabName.classList.add("buttonCell")
         }
     }
 

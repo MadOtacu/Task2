@@ -10,8 +10,15 @@ export function get (directoryPath: any, sortFlag: any) {
 
     let response = fetch(url)
         .then(e => e.json())
-        .then(commits => commits.data)
-        .then(data => createTableFromJson(data))
+        .then(commits => {
+            if (commits.status == 200) {
+                let commitsData = commits.data
+                createTableFromJson(commitsData)
+            }
+            else {
+                alert(commits.errorText)
+            }
+        })
         .catch(e => {
             alert(e.errorText)
         })

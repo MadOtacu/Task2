@@ -8,6 +8,8 @@ import { sortFlag } from "./sortFlagSetter";
 
 import { get } from "./get";
 
+import "./index.css"
+
 // Вызов функции при завершении загрузки страницы
 document.addEventListener('DOMContentLoaded', () => get(directoryPath, sortFlag), false);
 

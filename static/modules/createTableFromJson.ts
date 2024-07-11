@@ -12,9 +12,9 @@ export function createTableFromJson (response: any) {
         let tabName = tr.insertCell(1)
         let tabSize = tr.insertCell(2)
 
-        tabType.innerHTML = response[rowi].fileType
-        tabName.innerHTML = response[rowi].name
-        tabSize.innerHTML = response[rowi].convertedSize
+        tabType.textContent = response[rowi].fileType
+        tabName.textContent = response[rowi].name
+        tabSize.textContent = response[rowi].convertedSize
 
         if (response[rowi].fileType == "Директория") {
             tabName.addEventListener("click", dirDown)

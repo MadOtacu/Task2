@@ -42,7 +42,7 @@ func serverFunc(cfg *ini.File) {
 		Addr: cfg.Section("server").Key("port").String(),
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.Handle("/", http.FileServer(http.Dir(".")))
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

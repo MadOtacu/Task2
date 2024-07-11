@@ -10,13 +10,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "css-loader": "^7.1.2",
-    "mini-css-extract-plugin": "^2.9.0",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.92.1"
+    "css-loader": "7.1.2",
+    "mini-css-extract-plugin": "2.9.0",
+    "style-loader": "4.0.0",
+    "ts-loader": "9.5.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.3",
+    "webpack": "5.92.1"
   },
   "devDependencies": {
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "5.1.4"
   }
 }

@@ -2,7 +2,7 @@ package unitScaling
 
 import "strconv"
 
-// Функция скейлинга размера объектов
+// Sorting - Функция скейлинга размера объектов
 func UnitScaling(Size int64) string {
 	var restOfSize int64
 	var unitValue int

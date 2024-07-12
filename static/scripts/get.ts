@@ -3,10 +3,10 @@ import { directoryPathSetter } from "./directoryPathSetter"
 
 import { sort } from "./sort"
 
+export let startPath: any
+
 // Получение данных с сервера
 export function get (directoryPath: any, sortFlag: any) {
-    document.getElementById("path").textContent="Путь к директории: " + directoryPath
-
     document.getElementById("showTable").style.display = "none";
 
     document.getElementById("loader").style.display = "block";
@@ -16,7 +16,8 @@ export function get (directoryPath: any, sortFlag: any) {
     let response = fetch(url)
         .then(e => e.json())
         .then(commits => {
-            if (commits.status == 200) {
+            if (commits.status == 0) {
+                startPath = commits.startPath
                 directoryPathSetter(commits.path)
                 let commitsData = commits.data
                 document.getElementById("loader").style.display = "none";

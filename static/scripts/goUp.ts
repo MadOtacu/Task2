@@ -2,11 +2,11 @@ import { directoryPath, directoryPathSetter } from "./directoryPathSetter"
 
 import { sortFlag } from "./sortFlagSetter"
 
-import { get } from "./get"
+import { get, startPath } from "./get"
 
 // Переход на директорию выше
 export function goUp () {
-    if (directoryPath != "/home") {
+    if (directoryPath != startPath) {
         let directoryPathTemp = directoryPath.split("/")
 
         directoryPathTemp.splice(-1)

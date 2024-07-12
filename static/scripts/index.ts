@@ -13,6 +13,7 @@ import "../styles/index.css"
 // Вызов функции при завершении загрузки страницы
 document.addEventListener('DOMContentLoaded', () => get(directoryPath, sortFlag), false);
 
+// Добавление Слушателей событий
 document.getElementById("directoryUp").addEventListener("click", goUp)
 
 document.getElementById("sort").addEventListener("click", switchSort)

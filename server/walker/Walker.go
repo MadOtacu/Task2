@@ -7,9 +7,10 @@ import (
 	"path/filepath"
 	"sync"
 
-	Sorting "example.com/scripts/sorting"
+	Sorting "example.com/server/sorting"
 )
 
+// Walker - Функция обхода дериктории
 func Walker(i int, dst string, wg *sync.WaitGroup, dirElement fs.DirEntry, structFile *Sorting.File, structFileArr []Sorting.File) {
 	defer wg.Done()
 	// Если элемент является директорией проходимся по ее структуре и записываем ее размер

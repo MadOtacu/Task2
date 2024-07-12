@@ -2,6 +2,7 @@ package sorting
 
 import "fmt"
 
+// Структура данных тела ответа
 type File struct {
 	FileType      string `json:"fileType"`
 	Name          string `json:"name"`
@@ -9,6 +10,7 @@ type File struct {
 	ConvertedSize string `json:"convertedSize"`
 }
 
+// Sorting - Функция сортировки ответа
 func Sorting(arrToSort []File, sort string) {
 	for i := 0; i < (len(arrToSort) - 1); i++ {
 		for j := 0; j < ((len(arrToSort) - 1) - i); j++ {

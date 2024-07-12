@@ -4,12 +4,12 @@ import (
 	"os"
 	"sync"
 
-	Sorting "example.com/scripts/sorting"
-	UnitScaling "example.com/scripts/unitScaling"
-	Walker "example.com/scripts/walker"
+	Sorting "example.com/server/sorting"
+	UnitScaling "example.com/server/unitScaling"
+	Walker "example.com/server/walker"
 )
 
-// Функция поиска данных файлов и директорий
+// DirSearcher - Функция поиска данных файлов и директорий
 func DirSearcher(dst string, sort string) ([]Sorting.File, error) {
 	var wg sync.WaitGroup
 

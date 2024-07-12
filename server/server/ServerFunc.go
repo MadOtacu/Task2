@@ -9,16 +9,19 @@ import (
 	"syscall"
 	"time"
 
-	FileSys "example.com/scripts/fileSys"
-	ServerOutput "example.com/scripts/serverOutput"
+	FileSys "example.com/server/fileSys"
+	ServerOutput "example.com/server/serverOutput"
 	"gopkg.in/ini.v1"
 )
 
-// serverFunc - Функция обработки запросов сервера
+// ServerFunc - Функция обработки запросов сервера
 func ServerFunc(cfg *ini.File) {
+	const StatusOK = 0
+	const StatusBad = 1
+
 	server := &http.Server{
 		//Получение данных порта
-		Addr: cfg.Section("server").Key("port").String(),
+		Addr: ":" + cfg.Section("server").Key("port").String(),
 	}
 
 	http.Handle("/", http.FileServer(http.Dir(".")))
@@ -36,18 +39,19 @@ func ServerFunc(cfg *ini.File) {
 			sort = cfg.Section("servAtr").Key("sort").String()
 		}
 
+		startDst := cfg.Section("servAtr").Key("dst").String()
 		//Вызов функции из пакета FileSys
 		resp, err := FileSys.DirSearcher(dst, sort)
 		if err != nil {
-			ServerOutput.ServerOutput(w, http.StatusBadRequest, err.Error(), dst, nil)
+			ServerOutput.ServerOutput(w, StatusBad, err.Error(), dst, startDst, nil)
 			fmt.Println(err)
 		}
-		ServerOutput.ServerOutput(w, http.StatusOK, "", dst, resp)
+		ServerOutput.ServerOutput(w, StatusOK, "", dst, startDst, resp)
 	})
 
 	//Создание Горутины для запуска сервера
 	go func() {
-		fmt.Println("Сервер запущен и слушает.")
+		fmt.Printf("Сервер запущен и слушает по порту %s", server.Addr)
 		errServ := server.ListenAndServe()
 		if errServ != nil {
 			fmt.Println(errServ)

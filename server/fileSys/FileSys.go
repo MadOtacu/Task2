@@ -4,13 +4,13 @@ import (
 	"os"
 	"sync"
 
-	Sorting "example.com/server/sorting"
-	UnitScaling "example.com/server/unitScaling"
-	Walker "example.com/server/walker"
+	"example.com/server/sorting"
+	"example.com/server/unitScaling"
+	"example.com/server/walker"
 )
 
 // DirSearcher - Функция поиска данных файлов и директорий
-func DirSearcher(dst string, sort string) ([]Sorting.File, error) {
+func DirSearcher(dst string, sort string) ([]sorting.File, error) {
 	var wg sync.WaitGroup
 
 	// Считывание данных директории
@@ -19,23 +19,23 @@ func DirSearcher(dst string, sort string) ([]Sorting.File, error) {
 		return nil, errRead
 	}
 
-	structFileArr := make([]Sorting.File, len(dirList))
+	structFileArr := make([]sorting.File, len(dirList))
 
 	// Обход директории
 	for i, dirFile := range dirList {
 		wg.Add(1)
-		structFile := new(Sorting.File)
-		go Walker.Walker(i, dst, &wg, dirFile, structFile, structFileArr)
+		structFile := new(sorting.File)
+		go walker.Walker(i, dst, &wg, dirFile, structFile, structFileArr)
 	}
 
 	wg.Wait()
 
 	// Функция сортировки массива
-	Sorting.Sorting(structFileArr, sort)
+	sorting.Sorting(structFileArr, sort)
 
 	for i := 0; i < len(structFileArr); i++ {
 		// Запись конвертированого значения
-		structFileArr[i].ConvertedSize = UnitScaling.UnitScaling(structFileArr[i].Size)
+		structFileArr[i].ConvertedSize = unitScaling.UnitScaling(structFileArr[i].Size)
 	}
 
 	// Парсинг json-файла

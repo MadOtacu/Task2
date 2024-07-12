@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	FileSys "example.com/server/fileSys"
-	ServerOutput "example.com/server/serverOutput"
+	"example.com/server/fileSys"
+	"example.com/server/serverOutput"
 	"gopkg.in/ini.v1"
 )
 
@@ -21,13 +21,13 @@ func ServerFunc(cfg *ini.File) {
 
 	server := &http.Server{
 		//Получение данных порта
-		Addr: ":" + cfg.Section("server").Key("port").String(),
+		Addr: fmt.Sprintf(":%s", cfg.Section("server").Key("port").String()),
 	}
 
-	http.Handle("/", http.FileServer(http.Dir(".")))
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		start := time.Now()
 
 		//Получение данных из строки браузера (dst начинается с пути, в котором находится консоль)
 		dst := r.URL.Query().Get("dst")
@@ -41,12 +41,12 @@ func ServerFunc(cfg *ini.File) {
 
 		startDst := cfg.Section("servAtr").Key("dst").String()
 		//Вызов функции из пакета FileSys
-		resp, err := FileSys.DirSearcher(dst, sort)
+		resp, err := fileSys.DirSearcher(dst, sort)
 		if err != nil {
-			ServerOutput.ServerOutput(w, StatusBad, err.Error(), dst, startDst, nil)
+			serverOutput.ServerOutput(w, StatusBad, err.Error(), dst, startDst, start, nil)
 			fmt.Println(err)
 		}
-		ServerOutput.ServerOutput(w, StatusOK, "", dst, startDst, resp)
+		serverOutput.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
 	})
 
 	//Создание Горутины для запуска сервера

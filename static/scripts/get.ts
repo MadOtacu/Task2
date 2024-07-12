@@ -2,27 +2,33 @@ import { createTableFromJson } from "./createTableFromJson"
 import { directoryPathSetter } from "./directoryPathSetter"
 
 import { sort } from "./sort"
+import { timeSetter } from "./timeSetter";
+import { showTable } from "./showTable";
+import { hideTable } from "./hideTable";
+import { showLoader } from "./showLoader";
+import { hideLoader } from "./hideLoader";
 
 export let startPath: any
 
 // Получение данных с сервера
 export function get (directoryPath: any, sortFlag: any) {
-    document.getElementById("showTable").style.display = "none";
+    hideTable()
 
-    document.getElementById("loader").style.display = "block";
+    showLoader()
 
-    let url = "/path?dst=" + directoryPath + "&sort=" + sort(sortFlag)
+    let url = `/path?dst=${directoryPath}&sort=${sort(sortFlag)}`
 
     let response = fetch(url)
         .then(e => e.json())
         .then(commits => {
             if (commits.status == 0) {
+                timeSetter(commits.elapsedTime)
                 startPath = commits.startPath
                 directoryPathSetter(commits.path)
                 let commitsData = commits.data
-                document.getElementById("loader").style.display = "none";
+                hideLoader()
                 createTableFromJson(commitsData)
-                document.getElementById("showTable").style.display = "block";
+                showTable()
             }
             else {
                 document.getElementById("loader").style.display = "none";

@@ -4,10 +4,10 @@ import "fmt"
 
 // File - Структура данных тела ответа
 type File struct {
-	FileType      string `json:"fileType"`
-	Name          string `json:"name"`
-	Size          int64  `json:"size"`
-	ConvertedSize string `json:"convertedSize"`
+	FileType      string `json:"fileType"`      // Тип структуры (Файл или директория)
+	Name          string `json:"name"`          // Имя структуры
+	Size          int64  `json:"size"`          // Размер структуры
+	ConvertedSize string `json:"convertedSize"` // Конвертированый размер структуры
 }
 
 // Sorting - Функция сортировки ответа

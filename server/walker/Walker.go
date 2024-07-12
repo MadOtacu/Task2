@@ -7,15 +7,15 @@ import (
 	"path/filepath"
 	"sync"
 
-	Sorting "example.com/server/sorting"
+	"example.com/server/sorting"
 )
 
 // Walker - Функция обхода дериктории
-func Walker(i int, dst string, wg *sync.WaitGroup, dirElement fs.DirEntry, structFile *Sorting.File, structFileArr []Sorting.File) {
+func Walker(i int, dst string, wg *sync.WaitGroup, dirElement fs.DirEntry, structFile *sorting.File, structFileArr []sorting.File) {
 	defer wg.Done()
 	// Если элемент является директорией проходимся по ее структуре и записываем ее размер
 	if dirElement.IsDir() {
-		errWalking := filepath.Walk(dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
+		errWalking := filepath.Walk(fmt.Sprintf("%s/%s", dst, dirElement.Name()), func(path string, info fs.FileInfo, err error) error {
 			if !info.IsDir() {
 				structFile.Size += info.Size()
 			}

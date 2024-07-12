@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	FileSys "example.com/fileSys"
-	ServerOutput "example.com/serverOutput"
+	FileSys "example.com/scripts/fileSys"
+	ServerOutput "example.com/scripts/serverOutput"
 	"gopkg.in/ini.v1"
 )
 

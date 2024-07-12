@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	Server "example.com/server"
+	Server "example.com/scripts/server"
 	"gopkg.in/ini.v1"
 )
 

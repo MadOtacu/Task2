@@ -4,9 +4,9 @@ import (
 	"os"
 	"sync"
 
-	Sorting "example.com/sorting"
-	UnitScaling "example.com/unitScaling"
-	Walker "example.com/walker"
+	Sorting "example.com/scripts/sorting"
+	UnitScaling "example.com/scripts/unitScaling"
+	Walker "example.com/scripts/walker"
 )
 
 // Функция поиска данных файлов и директорий

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	Sorting "example.com/sorting"
+	Sorting "example.com/scripts/sorting"
 )
 
 type ServerResp struct {

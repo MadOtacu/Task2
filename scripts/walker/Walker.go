@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	Sorting "example.com/sorting"
+	Sorting "example.com/scripts/sorting"
 )
 
 func Walker(i int, dst string, wg *sync.WaitGroup, dirElement fs.DirEntry, structFile *Sorting.File, structFileArr []Sorting.File) {

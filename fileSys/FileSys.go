@@ -1,20 +1,16 @@
 package fileSys
 
 import (
-	"fmt"
-	"io/fs"
-	"log"
 	"os"
-	"path/filepath"
 	"sync"
 
 	Sorting "example.com/sorting"
 	UnitScaling "example.com/unitScaling"
+	Walker "example.com/walker"
 )
 
 // Функция поиска данных файлов и директорий
 func DirSearcher(dst string, sort string) ([]Sorting.File, error) {
-	structFileArr := make([]Sorting.File, 0)
 	var wg sync.WaitGroup
 
 	// Считывание данных директории
@@ -23,43 +19,13 @@ func DirSearcher(dst string, sort string) ([]Sorting.File, error) {
 		return nil, errRead
 	}
 
+	structFileArr := make([]Sorting.File, len(dirList))
+
 	// Обход директории
-	for _, dirFile := range dirList {
+	for i, dirFile := range dirList {
 		wg.Add(1)
-		dirElement := dirFile
 		structFile := new(Sorting.File)
-		go func() {
-			defer wg.Done()
-			// Если элемент является директорией проходимся по ее структуре и записываем ее размер
-			if dirElement.IsDir() {
-				errWalking := filepath.Walk(dst+"/"+dirElement.Name(), func(path string, info fs.FileInfo, err error) error {
-					if !info.IsDir() {
-						structFile.Size += info.Size()
-					}
-					return nil
-				})
-				if errWalking != nil {
-					fmt.Printf("Ошибка обхода директории: %s", errWalking.Error())
-				}
-
-				structFile.FileType = "Директория"
-				structFile.Name = dirElement.Name()
-
-				structFileArr = append(structFileArr, *structFile)
-			} else {
-				// Если элемент является файлом считываем его данные
-				infoFile, errGettingInfo := dirElement.Info()
-				if errGettingInfo != nil {
-					log.Println(errGettingInfo)
-				}
-
-				structFile.FileType = "Файл"
-				structFile.Name = dirElement.Name()
-				structFile.Size = infoFile.Size()
-
-				structFileArr = append(structFileArr, *structFile)
-			}
-		}()
+		go Walker.Walker(i, dst, &wg, dirFile, structFile, structFileArr)
 	}
 
 	wg.Wait()

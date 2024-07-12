@@ -1,12 +1,12 @@
-import { goUp } from "./goUp";
+import { goUp } from "goUp";
 
-import { switchSort } from "./switchSort";
+import { switchSort } from "switchSort";
 
-import { directoryPath } from "./directoryPathSetter";
+import { directoryPath } from "directoryPathSetter";
 
-import { sortFlag } from "./sortFlagSetter";
+import { sortFlag } from "sortFlagSetter";
 
-import { get } from "./get";
+import { get } from "get";
 
 import "../styles/index.css"
 

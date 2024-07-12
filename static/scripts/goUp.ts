@@ -1,8 +1,8 @@
-import { directoryPath, directoryPathSetter } from "./directoryPathSetter"
+import { directoryPath, directoryPathSetter } from "directoryPathSetter"
 
-import { sortFlag } from "./sortFlagSetter"
+import { sortFlag } from "sortFlagSetter"
 
-import { get, startPath } from "./get"
+import { get, startPath } from "get"
 
 // Переход на директорию выше
 export function goUp () {

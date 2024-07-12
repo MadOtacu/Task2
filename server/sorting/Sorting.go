@@ -2,7 +2,7 @@ package sorting
 
 import "fmt"
 
-// Структура данных тела ответа
+// File - Структура данных тела ответа
 type File struct {
 	FileType      string `json:"fileType"`
 	Name          string `json:"name"`

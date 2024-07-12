@@ -1,8 +1,11 @@
 package unitScaling
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
-// Sorting - Функция скейлинга размера объектов
+// UnitScaling - Функция скейлинга размера объектов
 func UnitScaling(Size int64) string {
 	var restOfSize int64
 	var unitValue int
@@ -31,5 +34,5 @@ func UnitScaling(Size int64) string {
 	// Вывод данных
 	SizeToPaste := strconv.FormatInt(Size, 10)
 	restOfSizeToPaste := strconv.FormatInt(restOfSize, 10)
-	return string(SizeToPaste + "." + restOfSizeToPaste + " " + unit)
+	return fmt.Sprintf("%s.%s %s", SizeToPaste, restOfSizeToPaste, unit)
 }

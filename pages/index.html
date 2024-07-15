@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="./dist/main.css">
+        <link type="text/css" href="../static/dist/main.css">
+        <script type="text/javascript" src="../static/dist/index_bundle.js"></script> 
         <title>
             Main
         </title>
@@ -10,15 +11,15 @@
         <button class="button smoothEdges" id="directoryUp" type="button">
             Назад
         </button>
-        <button class="button right smoothEdges" id="sort" type="button">
-            Сортировать
-        </button>
         <div class="path" id="time">
             Время выполнения запроса: 
         </div>
         <div class="path" id="path">
             Путь к директории
         </div>
+        <button class="button right smoothEdges" id="sort" type="button">
+            Сортировать
+        </button>
         <table>
             <th>
                 Тип
@@ -32,6 +33,5 @@
         </table>
         <div id="loader"></div>
         <div id="showTable"></div>           
-        <script src="./dist/index_bundle.js"></script> 
     </body>
 </html>

@@ -17,8 +17,8 @@ export function createTableFromJson (response: any) {
         tabSize.textContent = response[rowi].convertedSize
 
         if (response[rowi].fileType == "Директория") {
-            tabName.addEventListener("click", dirDown)
-            tabName.classList.add("buttonCell")
+            tr.addEventListener("click", dirDown)
+            tr.classList.add("buttonCell")
         }
     }
 

@@ -1,3 +1,3 @@
 export function timeSetter (time: any) {
-    document.getElementById("time").textContent = `Время выполнения запроса: ${time} миллисекунд`
+    document.getElementById("time").textContent = `Время выполнения запроса: ${time} секунд`
 }

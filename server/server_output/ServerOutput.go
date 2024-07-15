@@ -1,4 +1,4 @@
-package serverOutput
+package server_output
 
 import (
 	"encoding/json"
@@ -15,14 +15,15 @@ type ServerResp struct {
 	ErrorText   string         `json:"errorText"`   // Текст ошибки
 	Path        string         `json:"path"`        // Текущий путь
 	StartPath   string         `json:"startPath"`   // Стартовый путь
-	ElapsedTime int64          `json:"elapsedTime"` // Время выполнения
+	ElapsedTime string         `json:"elapsedTime"` // Время выполнения
 	Data        []sorting.File `json:"data"`        // Данные для отрисовки таблицы
 }
 
 // ServerOutput - Функция создающая ответ для сервера
 func ServerOutput(w http.ResponseWriter, status int, errorText string, path string, startPath string, start time.Time, data []sorting.File) {
 	resp := ServerResp{Status: status, ErrorText: errorText, Path: path, Data: data, StartPath: startPath}
-	resp.ElapsedTime = int64(time.Since(start) / time.Millisecond)
+	var elapsed = float32(time.Since(start)) / float32(time.Second)
+	resp.ElapsedTime = fmt.Sprintf("%.3f", elapsed)
 
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {

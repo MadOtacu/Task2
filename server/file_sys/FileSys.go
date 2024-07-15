@@ -1,11 +1,11 @@
-package fileSys
+package file_sys
 
 import (
 	"os"
 	"sync"
 
 	"example.com/server/sorting"
-	"example.com/server/unitScaling"
+	"example.com/server/unit_scaling"
 	"example.com/server/walker"
 )
 
@@ -35,7 +35,7 @@ func DirSearcher(dst string, sort string) ([]sorting.File, error) {
 
 	for i := 0; i < len(structFileArr); i++ {
 		// Запись конвертированого значения
-		structFileArr[i].ConvertedSize = unitScaling.UnitScaling(structFileArr[i].Size)
+		structFileArr[i].ConvertedSize = unit_scaling.UnitScaling(structFileArr[i].Size)
 	}
 
 	// Парсинг json-файла

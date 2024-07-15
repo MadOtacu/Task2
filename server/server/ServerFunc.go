@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"example.com/server/fileSys"
-	"example.com/server/serverOutput"
+	"example.com/server/file_sys"
+	"example.com/server/server_output"
 	"gopkg.in/ini.v1"
 )
 
@@ -24,7 +24,7 @@ func ServerFunc(cfg *ini.File) {
 		Addr: fmt.Sprintf(":%s", cfg.Section("server").Key("port").String()),
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.Handle("/", http.FileServer(http.Dir("./pages")))
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -41,17 +41,17 @@ func ServerFunc(cfg *ini.File) {
 
 		startDst := cfg.Section("servAtr").Key("dst").String()
 		//Вызов функции из пакета FileSys
-		resp, err := fileSys.DirSearcher(dst, sort)
+		resp, err := file_sys.DirSearcher(dst, sort)
 		if err != nil {
-			serverOutput.ServerOutput(w, StatusBad, err.Error(), dst, startDst, start, nil)
+			server_output.ServerOutput(w, StatusBad, err.Error(), dst, startDst, start, nil)
 			fmt.Println(err)
 		}
-		serverOutput.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
+		server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
 	})
 
 	//Создание Горутины для запуска сервера
 	go func() {
-		fmt.Printf("Сервер запущен и слушает по порту %s", server.Addr)
+		fmt.Printf("Сервер запускается по порту %s\n", server.Addr)
 		errServ := server.ListenAndServe()
 		if errServ != nil {
 			fmt.Println(errServ)
@@ -65,12 +65,12 @@ func ServerFunc(cfg *ini.File) {
 	<-sigChan
 
 	// Получение контекста сервера
-	shutdownCtx, shutdownRelease := context.WithTimeout(context.Background(), 10*time.Second)
+	shutdownCtx, shutdownRelease := context.WithCancel(context.Background())
 	defer shutdownRelease()
 
 	// Завершение работы сервера
 	if err := server.Shutdown(shutdownCtx); err != nil {
-		fmt.Printf("HTTP ошибка остановки: %v", err)
+		fmt.Printf("HTTP ошибка остановки: %v\n", err)
 	}
 	fmt.Println("Завершение Graceful shutdown.")
 }

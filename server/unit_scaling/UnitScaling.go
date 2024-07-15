@@ -1,4 +1,4 @@
-package unitScaling
+package unit_scaling
 
 import (
 	"fmt"

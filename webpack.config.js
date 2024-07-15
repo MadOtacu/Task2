@@ -1,7 +1,9 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
-const path = require("path")
+const path = require("path");
+const loader = require("ts-loader");
+const { MIMEType } = require("util");
 
 module.exports = {
     entry: "./static/scripts/index.ts",
@@ -9,7 +11,14 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: [
+                    {loader: 'ts-loader',},
+                    {
+                    loader: 'url-loader',
+                    options: {
+                        mimetype: 'text/javascript'
+                    }
+                }]
             },
             {
                 test: /\.css$/i,
@@ -18,6 +27,7 @@ module.exports = {
                     'css-loader'
                 ]
             },
+
         ],
     },
     resolve: {

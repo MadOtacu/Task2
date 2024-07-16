@@ -1,8 +1,8 @@
-import { directoryPath, directoryPathSetter } from "./directoryPathSetter"
+import { directoryPath, directoryPathSetter } from "server/directoryPathSetter"
 
-import { sortFlag } from "./sortFlagSetter"
+import { sortFlag } from "server/sortFlagSetter"
 
-import { get } from "./get"
+import { get } from "server/get"
 
 // Переход на директорию ниже
 export function dirDown(e: any) {

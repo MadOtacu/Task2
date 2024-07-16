@@ -1,8 +1,8 @@
-import { get } from "get"
+import { get } from "server/get"
 
-import { directoryPath } from "directoryPathSetter"
+import { directoryPath } from "server/directoryPathSetter"
 
-import { sortFlag, sortFlagSetter } from "sortFlagSetter"
+import { sortFlag, sortFlagSetter } from "server/sortFlagSetter"
 
 // Функция сортировки
 export function switchSort () {

@@ -1,12 +1,12 @@
-import { createTableFromJson } from "createTableFromJson"
-import { directoryPathSetter } from "directoryPathSetter"
+import { createTableFromJson } from "client/createTableFromJson"
+import { directoryPathSetter } from "server/directoryPathSetter"
 
-import { sort } from "./sort"
-import { timeSetter } from "timeSetter";
-import { showTable } from "showTable";
-import { hideTable } from "hideTable";
-import { showLoader } from "showLoader";
-import { hideLoader } from "hideLoader";
+import { sort } from "server/sort"
+import { timeSetter } from "server/timeSetter";
+import { showTable } from "client/showTable";
+import { hideTable } from "client/hideTable";
+import { showLoader } from "client/showLoader";
+import { hideLoader } from "client/hideLoader";
 
 export let startPath: any
 

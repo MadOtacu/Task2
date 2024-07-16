@@ -26,6 +26,8 @@ func ServerFunc(cfg *ini.File) {
 
 	http.Handle("/", http.FileServer(http.Dir("./pages")))
 
+	http.Handle("/static", http.FileServer(http.Dir("/static")))
+
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
@@ -49,6 +51,10 @@ func ServerFunc(cfg *ini.File) {
 		server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
 	})
 
+	// Получение контекста сервера
+	shutdownCtx, shutdownRelease := context.WithCancel(context.Background())
+	defer shutdownRelease()
+
 	//Создание Горутины для запуска сервера
 	go func() {
 		fmt.Printf("Сервер запускается по порту %s\n", server.Addr)
@@ -63,10 +69,6 @@ func ServerFunc(cfg *ini.File) {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	<-sigChan
-
-	// Получение контекста сервера
-	shutdownCtx, shutdownRelease := context.WithCancel(context.Background())
-	defer shutdownRelease()
 
 	// Завершение работы сервера
 	if err := server.Shutdown(shutdownCtx); err != nil {

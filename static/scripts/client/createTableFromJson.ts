@@ -1,4 +1,4 @@
-import { dirDown } from "./dirDown"
+import { dirDown } from "server/dirDown"
 
 // Создание и генерация таблицы
 export function createTableFromJson (response: any) {

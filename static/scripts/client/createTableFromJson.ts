@@ -1,6 +1,6 @@
 import { dirDown } from "server/dirDown"
-import fileImgLink from "../../static/images/document.png"
-import directoryImgLink from "../../static/images/folder.png"
+import fileImgLink from "Images/document.png"
+import directoryImgLink from "Images/folder.png"
 
 // Создание и генерация таблицы
 export function createTableFromJson (response: any) {
@@ -9,6 +9,9 @@ export function createTableFromJson (response: any) {
 
     const fileImg = new Image()
     const directoryImg = new Image()
+
+    fileImg.src = fileImgLink
+    directoryImg.src = directoryImgLink
 
     for (let rowi = 0; rowi < response.length; rowi++) {
         let tr = table.insertRow(rowi)

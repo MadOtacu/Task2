@@ -9,7 +9,7 @@
       "moduleResolution": "node",
       "baseUrl": "./static/scripts",
       "paths": {
-        "Images": ["../../images"]
+        "Images": ["../images"]
       }
     },
 }

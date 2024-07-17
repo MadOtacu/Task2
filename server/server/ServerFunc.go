@@ -24,9 +24,7 @@ func ServerFunc(cfg *ini.File) {
 		Addr: fmt.Sprintf(":%s", cfg.Section("server").Key("port").String()),
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("./pages")))
-
-	http.Handle("/static", http.FileServer(http.Dir("/static")))
+	http.Handle("/", http.FileServer(http.Dir("./static/dist")))
 
 	http.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -61,6 +59,7 @@ func ServerFunc(cfg *ini.File) {
 		errServ := server.ListenAndServe()
 		if errServ != nil {
 			fmt.Println(errServ)
+			return
 		}
 		fmt.Println("Остановка приема подключений к серверу.")
 	}()

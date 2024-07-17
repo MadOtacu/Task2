@@ -20,21 +20,31 @@ module.exports = {
                     'css-loader'
                 ]
             },
+            {
+                test: /\.png$/i,
+                type: 'asset',
+              },
 
         ],
     },
     resolve: {
+        alias: {
+            Images: path.resolve(__dirname, './static/images')
+        },
         extensions: [ '.ts', '.js'],
         plugins: [new TsconfigPathsPlugin({
             configFile: 'tsconfig.json'
-        })]
+        })],
     },
     output: {
         path: path.resolve(__dirname, './static/dist'),
-        filename: 'index_bundle.js'
+        filename: `index_bundle.[contenthash].js`
     },
     plugins: [
         new MiniCssExtractPlugin(),
-        new HtmlWebpackPlugin()
+        new HtmlWebpackPlugin({
+            template: './pages/index.html',
+            inject: "head"
+        })
       ]
 };

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -47,8 +48,23 @@ func ServerFunc(cfg *ini.File) {
 			server_output.ServerOutput(w, StatusBad, err.Error(), dst, startDst, start, nil)
 			fmt.Println(err)
 		}
-		jsonResp := bytes.NewReader(server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp))
-		http.Post("localhost/writer.php", "application/json", jsonResp)
+		fmt.Println("AAAAAAAAAAA")
+		jsonResp := bytes.NewBuffer(server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp))
+		url := "http://localhost:80/writer.php"
+		reqAA, err := http.NewRequest("POST", url, jsonResp)
+		reqAA.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		respAA, err := client.Do(reqAA)
+		if err != nil {
+			panic(err)
+		}
+		defer respAA.Body.Close()
+
+		fmt.Println("response Status:", respAA.Status)
+		fmt.Println("response Headers:", respAA.Header)
+		body, _ := ioutil.ReadAll(respAA.Body)
+		fmt.Println("response Body:", string(body))
 	})
 
 	// Получение контекста сервера

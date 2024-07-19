@@ -16,11 +16,17 @@ if ($conn->connect_error) {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-foreach( $data as $row ) {
-    $query .= "INSERT INTO TestTable ( root, src, parsed_time, date) VALUES 
-              ('".$row["path"]."', '".intval($row["data.size"])."', 
-              '".intval($row["elapsedTime"])."', now(); ";
-}
+$date = date('Y-m-d');
+echo implode(" ", $data);
+
+$root = $data['root'];
+$size = $data['size'];
+$time_spent = $data['parsedTime'];
+
+$query = $conn->prepare("INSERT INTO TestTable (root, src, parsed_time, date) VALUES (?, ?, ?, NOW())");
+$query->bind_param("sii", $root, $size, $time_spent);
+
+$query->execute();
 
 $conn->close();
 ?> 

@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +16,12 @@ import (
 	"example.com/server/server_output"
 	"gopkg.in/ini.v1"
 )
+
+type PHPData struct {
+	Root       string `json:"root"`
+	Size       int    `json:"size"`
+	ParsedTime string `json:"parsedTime"`
+}
 
 // ServerFunc - Функция обработки запросов сервера
 func ServerFunc(cfg *ini.File) {
@@ -49,9 +56,30 @@ func ServerFunc(cfg *ini.File) {
 			fmt.Println(err)
 		}
 		fmt.Println("AAAAAAAAAAA")
-		jsonResp := bytes.NewBuffer(server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp))
+		server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
+
+		var dirSize int
+		for _, obj := range resp {
+			dirSize += int(obj.Size)
+		}
+
+		var elapsed = float32(time.Since(start)) / float32(time.Second)
+
+		phpdata := PHPData{}
+
+		phpdata.Root = dst
+		phpdata.ParsedTime = fmt.Sprintf("%.3f", elapsed)
+		phpdata.Size = dirSize
+
+		phpResp, err := json.Marshal(phpdata)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		phpBuffer := bytes.NewBuffer(phpResp)
+
 		url := "http://localhost:80/writer.php"
-		reqAA, err := http.NewRequest("POST", url, jsonResp)
+		reqAA, _ := http.NewRequest("POST", url, phpBuffer)
 		reqAA.Header.Set("Content-Type", "application/json")
 
 		client := &http.Client{}

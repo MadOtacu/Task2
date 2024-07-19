@@ -20,7 +20,7 @@ type ServerResp struct {
 }
 
 // ServerOutput - Функция создающая ответ для сервера
-func ServerOutput(w http.ResponseWriter, status int, errorText string, path string, startPath string, start time.Time, data []sorting.File) []byte {
+func ServerOutput(w http.ResponseWriter, status int, errorText string, path string, startPath string, start time.Time, data []sorting.File) {
 	resp := ServerResp{Status: status, ErrorText: errorText, Path: path, Data: data, StartPath: startPath}
 	var elapsed = float32(time.Since(start)) / float32(time.Second)
 	resp.ElapsedTime = fmt.Sprintf("%.3f", elapsed)
@@ -31,5 +31,4 @@ func ServerOutput(w http.ResponseWriter, status int, errorText string, path stri
 	}
 
 	w.Write(jsonResp)
-	return jsonResp
 }

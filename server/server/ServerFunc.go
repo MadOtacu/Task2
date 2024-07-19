@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -46,7 +47,8 @@ func ServerFunc(cfg *ini.File) {
 			server_output.ServerOutput(w, StatusBad, err.Error(), dst, startDst, start, nil)
 			fmt.Println(err)
 		}
-		server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp)
+		jsonResp := bytes.NewReader(server_output.ServerOutput(w, StatusOK, "", dst, startDst, start, resp))
+		http.Post("localhost/writer.php", "application/json", jsonResp)
 	})
 
 	// Получение контекста сервера

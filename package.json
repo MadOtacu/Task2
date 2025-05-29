@@ -1,0 +1,27 @@
+{
+  "name": "static",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "css-loader": "7.1.2",
+    "html-webpack-plugin": "^5.6.0",
+    "mini-css-extract-plugin": "2.9.0",
+    "style-loader": "4.0.0",
+    "ts-loader": "9.5.1",
+    "ts-node": "10.9.2",
+    "tsconfig-paths-webpack-plugin": "4.1.0",
+    "typescript": "5.5.3",
+    "url-loader": "^4.1.1",
+    "webpack": "5.92.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "5.1.4"
+  }
+}
